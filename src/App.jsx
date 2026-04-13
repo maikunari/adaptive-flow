@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Plus, AlertCircle, Calendar, Settings2, Moon, HelpCircle } from 'lucide-react';
 import { CAPACITY_WARN_THRESHOLD } from './constants';
+import { useAuth } from './contexts/AuthContext';
 import useTaskManager from './hooks/useTaskManager';
 import TaskCard from './components/TaskCard';
 import OrbitCard from './components/OrbitCard';
@@ -10,11 +11,25 @@ import TriageModal from './components/TriageModal';
 import SunsetModal from './components/SunsetModal';
 import UndoToast from './components/UndoToast';
 import ShortcutOverlay from './components/ShortcutOverlay';
+import AuthScreen from './components/AuthScreen';
 
 const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
 const App = () => {
-  const tm = useTaskManager();
+  const { user, loading, isGuest, signInWithMagicLink, signOut, continueAsGuest } = useAuth();
+  const tm = useTaskManager(user?.id || null);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FBFBFD] flex items-center justify-center">
+        <div className="text-gray-300 text-lg font-medium">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user && !isGuest) {
+    return <AuthScreen onMagicLink={signInWithMagicLink} onGuest={continueAsGuest} />;
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-1000 ${tm.isClosingDay ? 'bg-[#FDF6E3]' : 'bg-[#FBFBFD]'} text-[#1D1D1F] font-sans selection:bg-indigo-100 p-6 md:p-12 flex justify-center`}>
@@ -259,6 +274,8 @@ const App = () => {
             sunsetTime={tm.sunsetTime}
             setSunsetTime={tm.setSunsetTime}
             onClose={() => tm.setIsSettingsOpen(false)}
+            user={user}
+            onSignOut={signOut}
           />
         )}
         {tm.triageTask && (
