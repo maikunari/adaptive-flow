@@ -129,6 +129,11 @@ const App = () => {
                   setEditValue={tm.setEditValue}
                   saveDuration={tm.saveDuration}
                   startEditing={tm.startEditing}
+                  editingTextId={tm.editingTextId}
+                  editTextValue={tm.editTextValue}
+                  setEditTextValue={tm.setEditTextValue}
+                  startEditingText={tm.startEditingText}
+                  saveText={tm.saveText}
                   completeTask={tm.completeTask}
                   deletePlanned={tm.deletePlanned}
                   handleDragEnd={tm.handleDragEnd}
@@ -180,6 +185,11 @@ const App = () => {
                     setEditValue={tm.setEditValue}
                     saveDuration={tm.saveDuration}
                     startEditing={tm.startEditing}
+                    editingTextId={tm.editingTextId}
+                    editTextValue={tm.editTextValue}
+                    setEditTextValue={tm.setEditTextValue}
+                    startEditingText={tm.startEditingText}
+                    saveText={tm.saveText}
                     attemptTriage={tm.attemptTriage}
                     deleteOrbit={tm.deleteOrbit}
                     handleDragEnd={tm.handleDragEnd}

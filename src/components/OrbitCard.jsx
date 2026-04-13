@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Trash2, Pencil } from 'lucide-react';
+import { ArrowRight, Trash2, Clock } from 'lucide-react';
 
 export default function OrbitCard({
   task,
@@ -9,6 +9,11 @@ export default function OrbitCard({
   setEditValue,
   saveDuration,
   startEditing,
+  editingTextId,
+  editTextValue,
+  setEditTextValue,
+  startEditingText,
+  saveText,
   attemptTriage,
   deleteOrbit,
   handleDragEnd,
@@ -29,11 +34,32 @@ export default function OrbitCard({
       exit={{ opacity: 0, x: -20 }}
       className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all cursor-grab"
     >
-      <div className="flex items-center gap-4">
-        <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
-        <span className="text-lg font-medium">{task.text}</span>
+      <div className="flex items-center gap-4 min-w-0 flex-1">
+        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
+        {editingTextId === task.id ? (
+          <input
+            type="text"
+            autoFocus
+            className="text-lg font-medium outline-none bg-indigo-50 rounded px-2 py-1 min-w-0 flex-1"
+            value={editTextValue}
+            onChange={(e) => setEditTextValue(e.target.value)}
+            onBlur={saveText}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') saveText();
+              if (e.key === 'Escape') saveText();
+            }}
+            aria-label="Edit task name"
+          />
+        ) : (
+          <span
+            onClick={() => startEditingText(task)}
+            className="text-lg font-medium truncate cursor-text hover:text-gray-600 transition-colors"
+          >
+            {task.text}
+          </span>
+        )}
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-shrink-0 ml-4">
         {editingId === task.id ? (
           <input
             type="number"
@@ -53,7 +79,7 @@ export default function OrbitCard({
             className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer"
           >
             {formatMinutes(task.duration)}
-            <Pencil size={10} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+            <Clock size={10} className="opacity-0 group-hover:opacity-60 transition-opacity" />
           </button>
         )}
         <button

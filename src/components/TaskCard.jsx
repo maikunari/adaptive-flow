@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Trash2, Check, Pencil } from 'lucide-react';
+import { CheckCircle2, Trash2, Check, Clock } from 'lucide-react';
 
 export default function TaskCard({
   task,
@@ -11,6 +11,11 @@ export default function TaskCard({
   setEditValue,
   saveDuration,
   startEditing,
+  editingTextId,
+  editTextValue,
+  setEditTextValue,
+  startEditingText,
+  saveText,
   completeTask,
   deletePlanned,
   handleDragEnd,
@@ -48,12 +53,12 @@ export default function TaskCard({
             : 'border-gray-100 hover:shadow-md'
       }`}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 min-w-0 flex-1">
         <button
           onClick={handleComplete}
           disabled={completing}
           aria-label={`Complete task: ${task.text}`}
-          className={`transition-colors ${
+          className={`flex-shrink-0 transition-colors ${
             completing
               ? 'text-emerald-500'
               : 'text-gray-300 hover:text-indigo-500'
@@ -71,11 +76,30 @@ export default function TaskCard({
             <CheckCircle2 size={24} />
           )}
         </button>
-        <span className={`text-lg font-medium transition-colors ${completing ? 'text-emerald-700 line-through' : ''}`}>
-          {task.text}
-        </span>
+        {editingTextId === task.id ? (
+          <input
+            type="text"
+            autoFocus
+            className="text-lg font-medium outline-none bg-indigo-50 rounded px-2 py-1 min-w-0 flex-1"
+            value={editTextValue}
+            onChange={(e) => setEditTextValue(e.target.value)}
+            onBlur={saveText}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') saveText();
+              if (e.key === 'Escape') saveText();
+            }}
+            aria-label="Edit task name"
+          />
+        ) : (
+          <span
+            onClick={() => !completing && startEditingText(task)}
+            className={`text-lg font-medium transition-colors truncate cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
+          >
+            {task.text}
+          </span>
+        )}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-shrink-0 ml-4">
         {!completing && (
           <>
             {editingId === task.id ? (
@@ -97,7 +121,7 @@ export default function TaskCard({
                 className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer"
               >
                 {formatMinutes(task.duration)}
-                <Pencil size={10} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+                <Clock size={10} className="opacity-0 group-hover:opacity-60 transition-opacity" />
               </button>
             )}
             <button

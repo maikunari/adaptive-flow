@@ -39,6 +39,8 @@ export default function useTaskManager() {
   const [triageTask, setTriageTask] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
+  const [editingTextId, setEditingTextId] = useState(null);
+  const [editTextValue, setEditTextValue] = useState('');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isClosingDay, setIsClosingDay] = useState(false);
   const [sunsetQueue, setSunsetQueue] = useState([]);
@@ -230,6 +232,23 @@ export default function useTaskManager() {
     setEditValue(task.duration.toString());
   };
 
+  const startEditingText = (task) => {
+    setEditingTextId(task.id);
+    setEditTextValue(task.text);
+  };
+
+  const saveText = () => {
+    const trimmed = editTextValue.trim();
+    if (!trimmed) {
+      setEditingTextId(null);
+      return;
+    }
+    const updateTask = (list) => list.map((t) => (t.id === editingTextId ? { ...t, text: trimmed } : t));
+    setPlanned(updateTask(planned));
+    setOrbit(updateTask(orbit));
+    setEditingTextId(null);
+  };
+
   const saveDuration = () => {
     const val = Math.max(0, parseInt(editValue, 10) || 0);
     const updateTask = (list) => list.map((t) => (t.id === editingId ? { ...t, duration: val } : t));
@@ -318,6 +337,11 @@ export default function useTaskManager() {
     editingId,
     editValue,
     setEditValue,
+    editingTextId,
+    editTextValue,
+    setEditTextValue,
+    startEditingText,
+    saveText,
     isSettingsOpen,
     setIsSettingsOpen,
     isClosingDay,
