@@ -30,9 +30,9 @@ export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetT
             <label className="text-xs font-bold uppercase tracking-widest text-gray-400 block">Daily Capacity (mins)</label>
             <input
               type="number"
-              min="0"
+              min="1"
               value={dailyCapacity}
-              onChange={(e) => setDailyCapacity(Math.max(0, parseInt(e.target.value, 10) || 0))}
+              onChange={(e) => setDailyCapacity(Math.max(1, parseInt(e.target.value, 10) || 1))}
               aria-label="Daily capacity in minutes"
               className="text-center text-3xl font-semibold w-full outline-none border-b border-gray-100 pb-2 text-indigo-600"
             />

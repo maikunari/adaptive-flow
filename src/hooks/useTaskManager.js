@@ -25,7 +25,7 @@ export default function useTaskManager() {
   const [dailyCapacity, setDailyCapacity] = useState(() => {
     try {
       const saved = localStorage.getItem('daily-capacity');
-      return saved ? parseInt(saved, 10) : DEFAULT_CAPACITY;
+      return saved ? Math.max(1, parseInt(saved, 10)) : DEFAULT_CAPACITY;
     } catch {
       return DEFAULT_CAPACITY;
     }
@@ -46,12 +46,15 @@ export default function useTaskManager() {
   const [sunsetQueue, setSunsetQueue] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recentlyRemoved, setRecentlyRemoved] = useState(null);
+  const [recentlyCompleted, setRecentlyCompleted] = useState(null);
+  const [completedToday, setCompletedToday] = useState(0);
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => safeParse('has-seen-onboarding', false));
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const inputRef = useRef(null);
   const intentInputRef = useRef(null);
   const undoTimerRef = useRef(null);
+  const completionTimerRef = useRef(null);
 
   // --- Persist to localStorage ---
   useEffect(() => {
@@ -62,10 +65,11 @@ export default function useTaskManager() {
     localStorage.setItem('has-seen-onboarding', JSON.stringify(hasSeenOnboarding));
   }, [planned, orbit, dailyCapacity, sunsetTime, hasSeenOnboarding]);
 
-  // --- Undo timer cleanup ---
+  // --- Timer cleanup ---
   useEffect(() => {
     return () => {
       if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+      if (completionTimerRef.current) clearTimeout(completionTimerRef.current);
     };
   }, []);
 
@@ -181,6 +185,34 @@ export default function useTaskManager() {
     }
   }, []);
 
+  // --- Completion undo (separate from delete) ---
+  const scheduleCompletionClear = useCallback(() => {
+    if (completionTimerRef.current) clearTimeout(completionTimerRef.current);
+    completionTimerRef.current = setTimeout(() => {
+      setRecentlyCompleted(null);
+      completionTimerRef.current = null;
+    }, UNDO_TIMEOUT_MS);
+  }, []);
+
+  const undoCompletion = useCallback(() => {
+    if (!recentlyCompleted) return;
+    setPlanned((prev) => [recentlyCompleted, ...prev]);
+    setCompletedToday((prev) => Math.max(0, prev - 1));
+    setRecentlyCompleted(null);
+    if (completionTimerRef.current) {
+      clearTimeout(completionTimerRef.current);
+      completionTimerRef.current = null;
+    }
+  }, [recentlyCompleted]);
+
+  const dismissCompletion = useCallback(() => {
+    setRecentlyCompleted(null);
+    if (completionTimerRef.current) {
+      clearTimeout(completionTimerRef.current);
+      completionTimerRef.current = null;
+    }
+  }, []);
+
   // --- Actions ---
   const moveTask = (index, direction) => {
     const newPlanned = [...planned];
@@ -209,6 +241,12 @@ export default function useTaskManager() {
   };
 
   const completeTask = (id) => {
+    const task = planned.find((t) => t.id === id);
+    if (task) {
+      setRecentlyCompleted(task);
+      scheduleCompletionClear();
+      setCompletedToday((prev) => prev + 1);
+    }
     setPlanned(planned.filter((t) => t.id !== id));
     setSelectedIndex((prev) => Math.max(prev - 1, -1));
   };
@@ -291,12 +329,10 @@ export default function useTaskManager() {
       softRemove(task, 'planned');
       setPlanned((prev) => prev.filter((t) => t.id !== task.id));
     }
-    // 'carry' — task stays in planned, just remove from queue
     setSunsetQueue((prev) => prev.filter((t) => t.id !== task.id));
   };
 
   return {
-    // State
     planned,
     orbit,
     dailyCapacity,
@@ -324,22 +360,21 @@ export default function useTaskManager() {
     sunsetQueue,
     selectedIndex,
     recentlyRemoved,
+    recentlyCompleted,
+    completedToday,
     hasSeenOnboarding,
     setHasSeenOnboarding,
     isHelpOpen,
     setIsHelpOpen,
-    // Refs
     inputRef,
     intentInputRef,
-    // Computed
     totalPlannedMinutes,
     isOverCapacity,
     capacityPercentage,
-    // Helpers
     formatMinutes,
-    // Actions
     addOrbitTask,
     addIntentTask,
+    moveTask,
     completeTask,
     deletePlanned,
     deleteOrbit,
@@ -351,5 +386,7 @@ export default function useTaskManager() {
     processSunsetTask,
     undoRemoval,
     dismissUndo,
+    undoCompletion,
+    dismissCompletion,
   };
 }

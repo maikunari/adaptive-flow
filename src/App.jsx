@@ -20,7 +20,7 @@ const App = () => {
     <div className={`min-h-screen transition-colors duration-1000 ${tm.isClosingDay ? 'bg-[#FDF6E3]' : 'bg-[#FBFBFD]'} text-[#1D1D1F] font-sans selection:bg-indigo-100 p-6 md:p-12 flex justify-center`}>
 
       <div className="max-w-6xl w-full">
-        {/* First-run welcome — inline, not a banner */}
+        {/* First-run welcome — inline */}
         <AnimatePresence>
           {!tm.hasSeenOnboarding && (
             <motion.p
@@ -28,12 +28,12 @@ const App = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, height: 0, marginBottom: 0 }}
               transition={{ duration: 0.3 }}
-              className="text-center text-sm text-gray-300 font-medium mb-10"
+              className="text-center text-sm text-gray-400 font-medium mb-10"
             >
               Plan on the left. Interruptions land on the right. When your day is full, something has to give.{' '}
               <button
                 onClick={() => tm.setHasSeenOnboarding(true)}
-                className="text-gray-400 hover:text-gray-500 transition-colors underline underline-offset-2"
+                className="text-gray-500 hover:text-gray-600 transition-colors underline underline-offset-2"
               >
                 Got it
               </button>
@@ -56,6 +56,7 @@ const App = () => {
               <div className="flex gap-3">
                 <button
                   onClick={tm.startSunset}
+                  title="Review unfinished tasks and close your day"
                   aria-label="Close day and start sunset review"
                   className="group flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-100 shadow-sm hover:shadow-md transition-all text-gray-500 hover:text-amber-600"
                 >
@@ -64,6 +65,7 @@ const App = () => {
                 </button>
                 <button
                   onClick={() => tm.setIsSettingsOpen(true)}
+                  title="Set your daily time budget"
                   aria-label="Open settings"
                   className={`group flex items-center gap-3 px-4 py-2 rounded-full shadow-sm transition-all border ${
                     tm.isOverCapacity
@@ -72,8 +74,10 @@ const App = () => {
                   }`}
                 >
                   <motion.div
-                    animate={tm.isOverCapacity ? { scale: [1, 1.1, 1] } : {}}
-                    transition={{ repeat: Infinity, duration: 2 }}
+                    key={tm.totalPlannedMinutes}
+                    initial={{ scale: 1.15 }}
+                    animate={tm.isOverCapacity ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+                    transition={tm.isOverCapacity ? { repeat: Infinity, duration: 2 } : { type: 'spring', stiffness: 300, damping: 15 }}
                     className="relative w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-white"
                   >
                     <motion.div
@@ -138,11 +142,27 @@ const App = () => {
                   saveText={tm.saveText}
                   completeTask={tm.completeTask}
                   deletePlanned={tm.deletePlanned}
+                  moveTask={tm.moveTask}
+                  totalTasks={tm.planned.length}
                   formatMinutes={tm.formatMinutes}
                 />
               ))}
             </AnimatePresence>
           </div>
+
+          {/* Keyboard nav hint — appears when keyboard selection is active */}
+          <AnimatePresence>
+            {tm.selectedIndex >= 0 && !isTouchDevice && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="text-xs text-gray-300 text-center font-medium"
+              >
+                ↑↓ navigate · Enter complete · ⌘↑↓ reorder
+              </motion.p>
+            )}
+          </AnimatePresence>
         </section>
 
         {/* Orbit Column */}
@@ -153,7 +173,7 @@ const App = () => {
               <span className="text-xs font-bold uppercase tracking-widest">Incoming</span>
             </div>
             <h2 className="text-5xl font-semibold tracking-tight">Orbit</h2>
-            <p className="text-gray-400 font-medium">Interruptions and sudden urgency.</p>
+            <p className="text-gray-400 font-medium">Interruptions and sudden urgency. <span className="text-orange-400">●</span> = high priority.</p>
           </header>
           <div className="space-y-6">
             <form onSubmit={tm.addOrbitTask} className="relative">
@@ -220,6 +240,7 @@ const App = () => {
         {tm.isClosingDay && (
           <SunsetModal
             sunsetQueue={tm.sunsetQueue}
+            completedToday={tm.completedToday}
             processSunsetTask={tm.processSunsetTask}
             onClose={() => tm.setIsClosingDay(false)}
           />
@@ -249,13 +270,28 @@ const App = () => {
         )}
       </AnimatePresence>
 
-      {/* Undo Toast */}
+      {/* Undo Toast — deletion */}
       <AnimatePresence>
         {tm.recentlyRemoved && (
           <UndoToast
             task={tm.recentlyRemoved.task}
+            source={tm.recentlyRemoved.source}
+            variant="removed"
             onUndo={tm.undoRemoval}
             onDismiss={tm.dismissUndo}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Undo Toast — completion (green variant) */}
+      <AnimatePresence>
+        {tm.recentlyCompleted && !tm.recentlyRemoved && (
+          <UndoToast
+            task={tm.recentlyCompleted}
+            source="planned"
+            variant="completed"
+            onUndo={tm.undoCompletion}
+            onDismiss={tm.dismissCompletion}
           />
         )}
       </AnimatePresence>

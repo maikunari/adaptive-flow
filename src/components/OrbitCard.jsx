@@ -68,6 +68,7 @@ export default function OrbitCard({
         ) : (
           <button
             onClick={() => startEditing(task)}
+            title="Click to edit duration"
             aria-label={`Edit duration: ${formatMinutes(task.duration)}`}
             className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer"
           >

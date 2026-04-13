@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Trash2, Check, Clock } from 'lucide-react';
+import { CheckCircle2, Trash2, Check, Clock, ChevronUp, ChevronDown } from 'lucide-react';
+
+const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
 export default function TaskCard({
   task,
@@ -18,6 +20,8 @@ export default function TaskCard({
   saveText,
   completeTask,
   deletePlanned,
+  moveTask,
+  totalTasks,
   formatMinutes,
 }) {
   const [completing, setCompleting] = useState(false);
@@ -46,7 +50,28 @@ export default function TaskCard({
             : 'border-gray-100 hover:shadow-md'
       }`}
     >
-      <div className="flex items-center gap-4 min-w-0 flex-1">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        {/* Touch reorder buttons */}
+        {isTouchDevice && !completing && (
+          <div className="flex flex-col gap-0.5 flex-shrink-0">
+            <button
+              onClick={() => index > 0 && moveTask(index, -1)}
+              disabled={index === 0}
+              aria-label="Move task up"
+              className={`p-0.5 rounded transition-colors ${index === 0 ? 'text-gray-200' : 'text-gray-400 active:text-indigo-500'}`}
+            >
+              <ChevronUp size={14} />
+            </button>
+            <button
+              onClick={() => index < totalTasks - 1 && moveTask(index, 1)}
+              disabled={index === totalTasks - 1}
+              aria-label="Move task down"
+              className={`p-0.5 rounded transition-colors ${index === totalTasks - 1 ? 'text-gray-200' : 'text-gray-400 active:text-indigo-500'}`}
+            >
+              <ChevronDown size={14} />
+            </button>
+          </div>
+        )}
         <button
           onClick={handleComplete}
           disabled={completing}
@@ -110,6 +135,7 @@ export default function TaskCard({
             ) : (
               <button
                 onClick={() => startEditing(task)}
+                title="Click to edit duration"
                 aria-label={`Edit duration: ${formatMinutes(task.duration)}`}
                 className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer"
               >
@@ -120,7 +146,7 @@ export default function TaskCard({
             <button
               onClick={() => deletePlanned(task.id)}
               aria-label={`Delete task: ${task.text}`}
-              className="opacity-0 group-hover:opacity-100 p-2 text-gray-300 hover:text-red-400 transition-all"
+              className="opacity-0 group-hover:opacity-100 p-3 text-gray-300 hover:text-red-400 transition-all"
             >
               <Trash2 size={16} />
             </button>

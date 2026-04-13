@@ -11,6 +11,13 @@ const shortcuts = [
   { keys: ['⌘', '/'], label: 'This help' },
 ];
 
+const concepts = [
+  { term: 'Intent', desc: 'Your plan for today' },
+  { term: 'Orbit', desc: 'Incoming interruptions' },
+  { term: 'Capacity', desc: 'Your daily time budget' },
+  { term: 'Sunset', desc: 'End-of-day review of unfinished work' },
+];
+
 export default function ShortcutOverlay({ onClose }) {
   return (
     <motion.div
@@ -27,7 +34,7 @@ export default function ShortcutOverlay({ onClose }) {
         onClick={(e) => e.stopPropagation()}
         className="bg-white w-full max-w-sm rounded-3xl p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] border border-gray-100"
         role="dialog"
-        aria-label="Keyboard shortcuts"
+        aria-label="Keyboard shortcuts and concepts"
       >
         <h3 className="text-xl font-semibold tracking-tight mb-6 text-center">Keyboard Shortcuts</h3>
         <div className="space-y-4">
@@ -47,6 +54,19 @@ export default function ShortcutOverlay({ onClose }) {
             </div>
           ))}
         </div>
+
+        <div className="border-t border-gray-100 mt-8 pt-6">
+          <h4 className="text-xs font-bold uppercase tracking-widest text-gray-300 mb-4">Concepts</h4>
+          <div className="space-y-3">
+            {concepts.map(({ term, desc }) => (
+              <div key={term} className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-[#1D1D1F]">{term}</span>
+                <span className="text-sm text-gray-400">{desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <p className="text-xs text-gray-300 text-center mt-8">Press Esc to close</p>
       </motion.div>
     </motion.div>

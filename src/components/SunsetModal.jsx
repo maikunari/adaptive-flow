@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Moon, CheckCircle2, X } from 'lucide-react';
 
-export default function SunsetModal({ sunsetQueue, processSunsetTask, onClose }) {
+export default function SunsetModal({ sunsetQueue, completedToday, processSunsetTask, onClose }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -27,6 +27,11 @@ export default function SunsetModal({ sunsetQueue, processSunsetTask, onClose })
               <Moon size={32} />
             </div>
             <h3 className="text-3xl font-semibold mb-3 tracking-tight">Sunset Review</h3>
+            {completedToday > 0 && (
+              <p className="text-emerald-500 text-sm font-semibold mb-4">
+                {completedToday} task{completedToday !== 1 ? 's' : ''} completed today
+              </p>
+            )}
             <p className="text-gray-400 mb-10 text-lg font-medium">
               You didn't finish <span className="text-[#1D1D1F] font-semibold">"{sunsetQueue[0].text}"</span>. What happens to it?
             </p>
@@ -48,6 +53,11 @@ export default function SunsetModal({ sunsetQueue, processSunsetTask, onClose })
               <CheckCircle2 size={32} />
             </div>
             <h3 className="text-3xl font-semibold mb-3 tracking-tight">Day Closed</h3>
+            {completedToday > 0 && (
+              <p className="text-emerald-500 text-sm font-semibold mb-4">
+                You completed {completedToday} task{completedToday !== 1 ? 's' : ''} today
+              </p>
+            )}
             <p className="text-gray-400 mb-10 text-lg font-medium">Your mind is clear. Rest now.</p>
             <button onClick={onClose} className="w-full p-5 rounded-3xl bg-[#1D1D1F] text-white font-semibold hover:bg-[#2D2D2F] transition-all">
               Rest Now
