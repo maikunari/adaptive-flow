@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, AlertCircle, Calendar, Settings2, Moon } from 'lucide-react';
+import { Plus, AlertCircle, Calendar, Settings2, Moon, HelpCircle } from 'lucide-react';
 import { CAPACITY_WARN_THRESHOLD } from './constants';
 import useTaskManager from './hooks/useTaskManager';
 import TaskCard from './components/TaskCard';
@@ -9,13 +9,37 @@ import SettingsModal from './components/SettingsModal';
 import TriageModal from './components/TriageModal';
 import SunsetModal from './components/SunsetModal';
 import UndoToast from './components/UndoToast';
+import ShortcutOverlay from './components/ShortcutOverlay';
 
 const App = () => {
   const tm = useTaskManager();
 
   return (
     <div className={`min-h-screen transition-colors duration-1000 ${tm.isClosingDay ? 'bg-[#FDF6E3]' : 'bg-[#FBFBFD]'} text-[#1D1D1F] font-sans selection:bg-indigo-100 p-6 md:p-12 flex justify-center`}>
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+      <div className="max-w-6xl w-full">
+        {/* First-run welcome — inline, not a banner */}
+        <AnimatePresence>
+          {!tm.hasSeenOnboarding && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-center text-sm text-gray-300 font-medium mb-10"
+            >
+              Plan on the left. Interruptions land on the right. When your day is full, something has to give.{' '}
+              <button
+                onClick={() => tm.setHasSeenOnboarding(true)}
+                className="text-gray-400 hover:text-gray-500 transition-colors underline underline-offset-2"
+              >
+                Got it
+              </button>
+            </motion.p>
+          )}
+        </AnimatePresence>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         {/* Intent Column */}
         <section className="space-y-8">
           <header className="space-y-4">
@@ -114,7 +138,8 @@ const App = () => {
             </AnimatePresence>
             {tm.planned.length === 0 && (
               <div className="text-center py-20 border-2 border-dashed border-gray-100 rounded-3xl text-gray-300 font-medium">
-                Your day is clear. Ready for intent.
+                What's your top priority today? Add it above, or press{' '}
+                <kbd className="text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded font-mono text-xs border border-gray-100">⌘J</kbd>
               </div>
             )}
           </div>
@@ -162,10 +187,33 @@ const App = () => {
                   />
                 ))}
               </AnimatePresence>
+              {tm.orbit.length === 0 && (
+                <div className="text-center py-16 border-2 border-dashed border-gray-100 rounded-3xl text-gray-300 font-medium">
+                  When something urgent lands, capture it here with{' '}
+                  <kbd className="text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded font-mono text-xs border border-gray-100">⌘K</kbd>
+                </div>
+              )}
             </div>
           </div>
         </section>
       </div>
+      </div>
+
+      {/* Help button — persistent corner hint */}
+      <button
+        onClick={() => tm.setIsHelpOpen(true)}
+        aria-label="Show keyboard shortcuts (Cmd+/)"
+        className="fixed bottom-6 right-6 p-3 rounded-full bg-white border border-gray-100 shadow-sm text-gray-300 opacity-40 hover:opacity-100 hover:shadow-md hover:text-gray-500 transition-all z-30"
+      >
+        <HelpCircle size={18} />
+      </button>
+
+      {/* Shortcut Overlay */}
+      <AnimatePresence>
+        {tm.isHelpOpen && (
+          <ShortcutOverlay onClose={() => tm.setIsHelpOpen(false)} />
+        )}
+      </AnimatePresence>
 
       {/* Modals */}
       <AnimatePresence>

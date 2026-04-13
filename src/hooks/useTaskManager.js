@@ -44,6 +44,8 @@ export default function useTaskManager() {
   const [sunsetQueue, setSunsetQueue] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [recentlyRemoved, setRecentlyRemoved] = useState(null);
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(() => safeParse('has-seen-onboarding', false));
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const inputRef = useRef(null);
   const intentInputRef = useRef(null);
@@ -57,7 +59,8 @@ export default function useTaskManager() {
     localStorage.setItem('orbit-tasks', JSON.stringify(orbit));
     localStorage.setItem('daily-capacity', dailyCapacity.toString());
     localStorage.setItem('sunset-time', sunsetTime);
-  }, [planned, orbit, dailyCapacity, sunsetTime]);
+    localStorage.setItem('has-seen-onboarding', JSON.stringify(hasSeenOnboarding));
+  }, [planned, orbit, dailyCapacity, sunsetTime, hasSeenOnboarding]);
 
   // --- Undo timer cleanup ---
   useEffect(() => {
@@ -87,6 +90,12 @@ export default function useTaskManager() {
         setTriageTask(null);
         setIsClosingDay(false);
         setSunsetQueue([]);
+        setIsHelpOpen(false);
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === '/') {
+        e.preventDefault();
+        setIsHelpOpen((prev) => !prev);
         return;
       }
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -187,6 +196,7 @@ export default function useTaskManager() {
     const newTask = { id: Date.now().toString(), text: inputValue, duration: DEFAULT_DURATION, priority: 'medium' };
     setOrbit([newTask, ...orbit]);
     setInputValue('');
+    if (!hasSeenOnboarding) setHasSeenOnboarding(true);
   };
 
   const addIntentTask = (e) => {
@@ -195,6 +205,7 @@ export default function useTaskManager() {
     const newTask = { id: Date.now().toString(), text: intentInputValue, duration: DEFAULT_DURATION, priority: 'medium' };
     setPlanned((prev) => [...prev, newTask]);
     setIntentInputValue('');
+    if (!hasSeenOnboarding) setHasSeenOnboarding(true);
   };
 
   const completeTask = (id) => {
@@ -314,6 +325,10 @@ export default function useTaskManager() {
     sunsetQueue,
     selectedIndex,
     recentlyRemoved,
+    hasSeenOnboarding,
+    setHasSeenOnboarding,
+    isHelpOpen,
+    setIsHelpOpen,
     // Refs
     inputRef,
     intentInputRef,
