@@ -11,6 +11,8 @@ import SunsetModal from './components/SunsetModal';
 import UndoToast from './components/UndoToast';
 import ShortcutOverlay from './components/ShortcutOverlay';
 
+const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
 const App = () => {
   const tm = useTaskManager();
 
@@ -107,7 +109,7 @@ const App = () => {
               ref={tm.intentInputRef}
               value={tm.intentInputValue}
               onChange={(e) => tm.setIntentInputValue(e.target.value)}
-              placeholder="Plan your day...  ⌘J"
+              placeholder={isTouchDevice ? "Plan your day..." : "Plan your day...  ⌘J"}
               aria-label="Add task directly to Intent"
               className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
             />
@@ -159,7 +161,7 @@ const App = () => {
                 ref={tm.inputRef}
                 value={tm.inputValue}
                 onChange={(e) => tm.setInputValue(e.target.value)}
-                placeholder="Capture distraction...  ⌘K"
+                placeholder={isTouchDevice ? "Capture distraction..." : "Capture distraction...  ⌘K"}
                 aria-label="Add new orbit task"
                 className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
               />
@@ -195,14 +197,16 @@ const App = () => {
       </div>
       </div>
 
-      {/* Help button — persistent corner hint */}
-      <button
-        onClick={() => tm.setIsHelpOpen(true)}
-        aria-label="Show keyboard shortcuts (Cmd+/)"
-        className="fixed bottom-6 right-6 p-3 rounded-full bg-white border border-gray-100 shadow-sm text-gray-300 opacity-40 hover:opacity-100 hover:shadow-md hover:text-gray-500 transition-all z-30"
-      >
-        <HelpCircle size={18} />
-      </button>
+      {/* Help button — persistent corner hint (desktop only) */}
+      {!isTouchDevice && (
+        <button
+          onClick={() => tm.setIsHelpOpen(true)}
+          aria-label="Show keyboard shortcuts (Cmd+/)"
+          className="fixed bottom-6 right-6 p-3 rounded-full bg-white border border-gray-100 shadow-sm text-gray-300 opacity-40 hover:opacity-100 hover:shadow-md hover:text-gray-500 transition-all z-30"
+        >
+          <HelpCircle size={18} />
+        </button>
+      )}
 
       {/* Shortcut Overlay */}
       <AnimatePresence>
