@@ -14,7 +14,7 @@ export default function SunsetModal({ sunsetQueue, processSunsetTask, onClose })
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
-        className="bg-white w-full max-w-lg rounded-[48px] p-12 shadow-2xl text-center border border-amber-100 relative"
+        className="bg-white w-full max-w-lg rounded-3xl p-12 shadow-2xl text-center border border-amber-100 relative"
         role="dialog"
         aria-label="Sunset review"
       >
@@ -28,10 +28,10 @@ export default function SunsetModal({ sunsetQueue, processSunsetTask, onClose })
             </div>
             <h3 className="text-3xl font-semibold mb-3 tracking-tight">Sunset Review</h3>
             <p className="text-gray-400 mb-10 text-lg font-medium">
-              You didn't finish <span className="text-black font-semibold">"{sunsetQueue[0].text}"</span>. What happens to it?
+              You didn't finish <span className="text-[#1D1D1F] font-semibold">"{sunsetQueue[0].text}"</span>. What happens to it?
             </p>
             <div className="grid gap-3">
-              <button onClick={() => processSunsetTask(sunsetQueue[0], 'carry')} className="w-full p-5 rounded-3xl bg-black text-white font-semibold hover:bg-gray-800 transition-all">
+              <button onClick={() => processSunsetTask(sunsetQueue[0], 'carry')} className="w-full p-5 rounded-3xl bg-[#1D1D1F] text-white font-semibold hover:bg-[#2D2D2F] transition-all">
                 Keep for Tomorrow
               </button>
               <button onClick={() => processSunsetTask(sunsetQueue[0], 'orbit')} className="w-full p-5 rounded-3xl border border-gray-100 hover:border-amber-400 hover:bg-amber-50 transition-all font-medium">
@@ -49,7 +49,7 @@ export default function SunsetModal({ sunsetQueue, processSunsetTask, onClose })
             </div>
             <h3 className="text-3xl font-semibold mb-3 tracking-tight">Day Closed</h3>
             <p className="text-gray-400 mb-10 text-lg font-medium">Your mind is clear. Rest now.</p>
-            <button onClick={onClose} className="w-full p-5 rounded-3xl bg-black text-white font-semibold hover:bg-gray-800 transition-all">
+            <button onClick={onClose} className="w-full p-5 rounded-3xl bg-[#1D1D1F] text-white font-semibold hover:bg-[#2D2D2F] transition-all">
               Rest Now
             </button>
           </>

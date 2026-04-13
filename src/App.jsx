@@ -8,12 +8,13 @@ import OrbitCard from './components/OrbitCard';
 import SettingsModal from './components/SettingsModal';
 import TriageModal from './components/TriageModal';
 import SunsetModal from './components/SunsetModal';
+import UndoToast from './components/UndoToast';
 
 const App = () => {
   const tm = useTaskManager();
 
   return (
-    <div className={`min-h-screen transition-colors duration-1000 ${tm.isClosingDay ? 'bg-[#FDF6E3]' : 'bg-[#FBFBFD]'} text-[#1D1D1F] font-sans selection:bg-blue-100 p-6 md:p-12 flex justify-center`}>
+    <div className={`min-h-screen transition-colors duration-1000 ${tm.isClosingDay ? 'bg-[#FDF6E3]' : 'bg-[#FBFBFD]'} text-[#1D1D1F] font-sans selection:bg-indigo-100 p-6 md:p-12 flex justify-center`}>
       <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         {/* Intent Column */}
         <section className="space-y-8">
@@ -55,7 +56,7 @@ const App = () => {
                           ? 'bg-red-500'
                           : tm.capacityPercentage > CAPACITY_WARN_THRESHOLD
                             ? 'bg-orange-400'
-                            : 'bg-blue-500'
+                            : 'bg-indigo-500'
                       }`}
                       initial={{ height: 0 }}
                       animate={{ height: `${tm.capacityPercentage}%` }}
@@ -75,6 +76,21 @@ const App = () => {
             </div>
             <p className="text-gray-400 font-medium">The non-negotiable commitments.</p>
           </header>
+
+          {/* Add to Intent input */}
+          <form onSubmit={tm.addIntentTask} className="relative">
+            <input
+              ref={tm.intentInputRef}
+              value={tm.intentInputValue}
+              onChange={(e) => tm.setIntentInputValue(e.target.value)}
+              placeholder="Plan your day... (Cmd+J)"
+              aria-label="Add task directly to Intent"
+              className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
+            />
+            <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300">
+              <Calendar size={20} />
+            </div>
+          </form>
 
           <div ref={tm.intentZoneRef} className="space-y-3">
             <AnimatePresence mode="popLayout">
@@ -97,7 +113,7 @@ const App = () => {
               ))}
             </AnimatePresence>
             {tm.planned.length === 0 && (
-              <div className="text-center py-20 border-2 border-dashed border-gray-100 rounded-[40px] text-gray-300 font-medium">
+              <div className="text-center py-20 border-2 border-dashed border-gray-100 rounded-3xl text-gray-300 font-medium">
                 Your day is clear. Ready for intent.
               </div>
             )}
@@ -122,7 +138,7 @@ const App = () => {
                 onChange={(e) => tm.setInputValue(e.target.value)}
                 placeholder="Capture distraction... (Cmd+K)"
                 aria-label="Add new orbit task"
-                className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
+                className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
               />
               <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-300">
                 <Plus size={24} />
@@ -178,6 +194,20 @@ const App = () => {
             planned={tm.planned}
             executeTradeOff={tm.executeTradeOff}
             onClose={() => tm.setTriageTask(null)}
+            formatMinutes={tm.formatMinutes}
+            totalPlannedMinutes={tm.totalPlannedMinutes}
+            dailyCapacity={tm.dailyCapacity}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Undo Toast */}
+      <AnimatePresence>
+        {tm.recentlyRemoved && (
+          <UndoToast
+            task={tm.recentlyRemoved.task}
+            onUndo={tm.undoRemoval}
+            onDismiss={tm.dismissUndo}
           />
         )}
       </AnimatePresence>

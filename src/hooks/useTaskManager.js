@@ -1,10 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   DEFAULT_CAPACITY,
   DEFAULT_DURATION,
   DEFAULT_SUNSET_TIME,
   CHECK_INTERVAL_MS,
 } from '../constants';
+
+const UNDO_TIMEOUT_MS = 8000;
 
 function safeParse(key, fallback) {
   try {
@@ -33,6 +35,7 @@ export default function useTaskManager() {
   });
 
   const [inputValue, setInputValue] = useState('');
+  const [intentInputValue, setIntentInputValue] = useState('');
   const [triageTask, setTriageTask] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState('');
@@ -40,10 +43,13 @@ export default function useTaskManager() {
   const [isClosingDay, setIsClosingDay] = useState(false);
   const [sunsetQueue, setSunsetQueue] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [recentlyRemoved, setRecentlyRemoved] = useState(null);
 
   const inputRef = useRef(null);
+  const intentInputRef = useRef(null);
   const intentZoneRef = useRef(null);
   const orbitZoneRef = useRef(null);
+  const undoTimerRef = useRef(null);
 
   // --- Persist to localStorage ---
   useEffect(() => {
@@ -52,6 +58,13 @@ export default function useTaskManager() {
     localStorage.setItem('daily-capacity', dailyCapacity.toString());
     localStorage.setItem('sunset-time', sunsetTime);
   }, [planned, orbit, dailyCapacity, sunsetTime]);
+
+  // --- Undo timer cleanup ---
+  useEffect(() => {
+    return () => {
+      if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    };
+  }, []);
 
   // --- Sunset timer ---
   useEffect(() => {
@@ -79,6 +92,11 @@ export default function useTaskManager() {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         inputRef.current?.focus();
+        return;
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'j') {
+        e.preventDefault();
+        intentInputRef.current?.focus();
         return;
       }
       const isModalOpen = isSettingsOpen || triageTask || isClosingDay;
@@ -117,6 +135,43 @@ export default function useTaskManager() {
   const isOverCapacity = totalPlannedMinutes > dailyCapacity;
   const capacityPercentage = Math.min((totalPlannedMinutes / dailyCapacity) * 100, 100);
 
+  // --- Soft-delete with undo ---
+  const scheduleUndoClear = useCallback(() => {
+    if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
+    undoTimerRef.current = setTimeout(() => {
+      setRecentlyRemoved(null);
+      undoTimerRef.current = null;
+    }, UNDO_TIMEOUT_MS);
+  }, []);
+
+  const softRemove = useCallback((task, source) => {
+    setRecentlyRemoved({ task, source, timestamp: Date.now() });
+    scheduleUndoClear();
+  }, [scheduleUndoClear]);
+
+  const undoRemoval = useCallback(() => {
+    if (!recentlyRemoved) return;
+    const { task, source } = recentlyRemoved;
+    if (source === 'planned') {
+      setPlanned((prev) => [task, ...prev]);
+    } else if (source === 'orbit') {
+      setOrbit((prev) => [task, ...prev]);
+    }
+    setRecentlyRemoved(null);
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+  }, [recentlyRemoved]);
+
+  const dismissUndo = useCallback(() => {
+    setRecentlyRemoved(null);
+    if (undoTimerRef.current) {
+      clearTimeout(undoTimerRef.current);
+      undoTimerRef.current = null;
+    }
+  }, []);
+
   // --- Actions ---
   const moveTask = (index, direction) => {
     const newPlanned = [...planned];
@@ -134,13 +189,30 @@ export default function useTaskManager() {
     setInputValue('');
   };
 
+  const addIntentTask = (e) => {
+    e?.preventDefault();
+    if (!intentInputValue.trim()) return;
+    const newTask = { id: Date.now().toString(), text: intentInputValue, duration: DEFAULT_DURATION, priority: 'medium' };
+    setPlanned((prev) => [...prev, newTask]);
+    setIntentInputValue('');
+  };
+
   const completeTask = (id) => {
     setPlanned(planned.filter((t) => t.id !== id));
     setSelectedIndex((prev) => Math.max(prev - 1, -1));
   };
 
-  const deletePlanned = (id) => setPlanned(planned.filter((t) => t.id !== id));
-  const deleteOrbit = (id) => setOrbit(orbit.filter((t) => t.id !== id));
+  const deletePlanned = (id) => {
+    const task = planned.find((t) => t.id === id);
+    if (task) softRemove(task, 'planned');
+    setPlanned(planned.filter((t) => t.id !== id));
+  };
+
+  const deleteOrbit = (id) => {
+    const task = orbit.find((t) => t.id === id);
+    if (task) softRemove(task, 'orbit');
+    setOrbit(orbit.filter((t) => t.id !== id));
+  };
 
   const startEditing = (task) => {
     setEditingId(task.id);
@@ -211,6 +283,7 @@ export default function useTaskManager() {
       setOrbit((prev) => [{ ...task, priority: 'low' }, ...prev]);
       setPlanned((prev) => prev.filter((t) => t.id !== task.id));
     } else if (decision === 'discard') {
+      softRemove(task, 'planned');
       setPlanned((prev) => prev.filter((t) => t.id !== task.id));
     }
     // 'carry' — task stays in planned, just remove from queue
@@ -227,6 +300,8 @@ export default function useTaskManager() {
     setSunsetTime,
     inputValue,
     setInputValue,
+    intentInputValue,
+    setIntentInputValue,
     triageTask,
     setTriageTask,
     editingId,
@@ -238,8 +313,10 @@ export default function useTaskManager() {
     setIsClosingDay,
     sunsetQueue,
     selectedIndex,
+    recentlyRemoved,
     // Refs
     inputRef,
+    intentInputRef,
     intentZoneRef,
     orbitZoneRef,
     // Computed
@@ -250,6 +327,7 @@ export default function useTaskManager() {
     formatMinutes,
     // Actions
     addOrbitTask,
+    addIntentTask,
     completeTask,
     deletePlanned,
     deleteOrbit,
@@ -260,5 +338,7 @@ export default function useTaskManager() {
     handleDragEnd,
     startSunset,
     processSunsetTask,
+    undoRemoval,
+    dismissUndo,
   };
 }

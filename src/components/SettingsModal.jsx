@@ -14,7 +14,7 @@ export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetT
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="bg-white w-full max-w-md rounded-[48px] p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-gray-100 text-center relative"
+        className="bg-white w-full max-w-md rounded-3xl p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-gray-100 text-center relative"
         role="dialog"
         aria-label="Settings"
       >
@@ -34,7 +34,7 @@ export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetT
               value={dailyCapacity}
               onChange={(e) => setDailyCapacity(Math.max(0, parseInt(e.target.value, 10) || 0))}
               aria-label="Daily capacity in minutes"
-              className="text-center text-3xl font-semibold w-full outline-none border-b border-gray-100 pb-2 text-blue-600"
+              className="text-center text-3xl font-semibold w-full outline-none border-b border-gray-100 pb-2 text-indigo-600"
             />
           </div>
           <div className="space-y-3">
@@ -48,8 +48,8 @@ export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetT
             />
           </div>
         </div>
-        <button onClick={onClose} className="w-full p-5 rounded-3xl bg-black text-white font-semibold hover:bg-gray-800 transition-all">
-          Save Preferences
+        <button onClick={onClose} className="w-full p-5 rounded-3xl bg-[#1D1D1F] text-white font-semibold hover:bg-[#2D2D2F] transition-all">
+          Done
         </button>
       </motion.div>
     </motion.div>

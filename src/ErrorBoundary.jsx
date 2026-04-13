@@ -23,7 +23,7 @@ export default class ErrorBoundary extends React.Component {
             <p className="text-gray-400 text-lg">The app encountered an unexpected error.</p>
             <button
               onClick={() => this.setState({ hasError: false })}
-              className="px-6 py-3 rounded-full bg-black text-white font-semibold hover:bg-gray-800 transition-all"
+              className="px-6 py-3 rounded-full bg-[#1D1D1F] text-white font-semibold hover:bg-[#2D2D2F] transition-all"
             >
               Try Again
             </button>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, Trash2, Pencil } from 'lucide-react';
 
 export default function OrbitCard({
   task,
@@ -27,7 +27,7 @@ export default function OrbitCard({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-white border border-gray-100 p-5 rounded-[28px] shadow-sm flex items-center justify-between group hover:border-blue-200 transition-all cursor-grab"
+      className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all cursor-grab"
     >
       <div className="flex items-center gap-4">
         <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
@@ -39,7 +39,7 @@ export default function OrbitCard({
             type="number"
             min="0"
             autoFocus
-            className="w-16 text-right text-xs font-semibold text-blue-600 outline-none bg-blue-50 rounded px-2 py-1"
+            className="w-16 text-right text-xs font-semibold text-indigo-600 outline-none bg-indigo-50 rounded px-2 py-1"
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             onBlur={saveDuration}
@@ -50,24 +50,25 @@ export default function OrbitCard({
           <button
             onClick={() => startEditing(task)}
             aria-label={`Edit duration: ${formatMinutes(task.duration)}`}
-            className="text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 transition-colors cursor-text"
+            className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer"
           >
             {formatMinutes(task.duration)}
+            <Pencil size={10} className="opacity-0 group-hover:opacity-60 transition-opacity" />
           </button>
         )}
         <button
           onClick={() => attemptTriage(task)}
           aria-label={`Move "${task.text}" to Intent`}
-          className="p-3 bg-gray-50 rounded-full text-gray-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all"
+          className="p-3 bg-gray-50 rounded-full text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all"
         >
           <ArrowRight size={20} />
         </button>
         <button
           onClick={() => deleteOrbit(task.id)}
           aria-label={`Delete task: ${task.text}`}
-          className="p-3 text-gray-300 hover:text-red-400 transition-all"
+          className="opacity-0 group-hover:opacity-100 p-3 text-gray-300 hover:text-red-400 transition-all"
         >
-          <X size={20} />
+          <Trash2 size={16} />
         </button>
       </div>
     </motion.div>
