@@ -18,7 +18,6 @@ export default function TaskCard({
   saveText,
   completeTask,
   deletePlanned,
-  handleDragEnd,
   formatMinutes,
 }) {
   const [completing, setCompleting] = useState(false);
@@ -31,12 +30,6 @@ export default function TaskCard({
   return (
     <motion.div
       layout
-      drag={!completing}
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={0.7}
-      dragMomentum={false}
-      onDragEnd={(e, info) => handleDragEnd(e, info, task, 'planned')}
-      whileDrag={{ scale: 1.05, zIndex: 50, boxShadow: '0 20px 40px rgba(0,0,0,0.1)', cursor: 'grabbing' }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={
@@ -45,7 +38,7 @@ export default function TaskCard({
           : { opacity: 1, scale: 1 }
       }
       exit={{ opacity: 0, scale: 0.9 }}
-      className={`group bg-white border p-5 rounded-2xl shadow-sm transition-all flex items-center justify-between cursor-grab ${
+      className={`group bg-white border p-5 rounded-2xl shadow-sm transition-all flex items-center justify-between ${
         completing
           ? 'border-emerald-300 shadow-emerald-100 shadow-md'
           : selectedIndex === index

@@ -116,7 +116,7 @@ const App = () => {
             </div>
           </form>
 
-          <div ref={tm.intentZoneRef} className="space-y-3">
+          <div className="space-y-3">
             <AnimatePresence mode="popLayout">
               {tm.planned.map((task, index) => (
                 <TaskCard
@@ -136,7 +136,6 @@ const App = () => {
                   saveText={tm.saveText}
                   completeTask={tm.completeTask}
                   deletePlanned={tm.deletePlanned}
-                  handleDragEnd={tm.handleDragEnd}
                   formatMinutes={tm.formatMinutes}
                 />
               ))}
@@ -174,7 +173,7 @@ const App = () => {
                 <Plus size={24} />
               </div>
             </form>
-            <div ref={tm.orbitZoneRef} className="space-y-3">
+            <div className="space-y-3">
               <AnimatePresence mode="popLayout">
                 {tm.orbit.map((task) => (
                   <OrbitCard
@@ -192,7 +191,6 @@ const App = () => {
                     saveText={tm.saveText}
                     attemptTriage={tm.attemptTriage}
                     deleteOrbit={tm.deleteOrbit}
-                    handleDragEnd={tm.handleDragEnd}
                     formatMinutes={tm.formatMinutes}
                   />
                 ))}

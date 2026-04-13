@@ -51,8 +51,6 @@ export default function useTaskManager() {
 
   const inputRef = useRef(null);
   const intentInputRef = useRef(null);
-  const intentZoneRef = useRef(null);
-  const orbitZoneRef = useRef(null);
   const undoTimerRef = useRef(null);
 
   // --- Persist to localStorage ---
@@ -277,29 +275,6 @@ export default function useTaskManager() {
     setTriageTask(null);
   };
 
-  const handleDragEnd = (event, info, task, source) => {
-    const { x, y } = info.point;
-    if (orbitZoneRef.current) {
-      const rect = orbitZoneRef.current.getBoundingClientRect();
-      if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
-        if (source === 'planned') {
-          setOrbit((prev) => [{ ...task, priority: 'low' }, ...prev]);
-          setPlanned((prev) => prev.filter((t) => t.id !== task.id));
-        }
-        return;
-      }
-    }
-    if (intentZoneRef.current) {
-      const rect = intentZoneRef.current.getBoundingClientRect();
-      if (x > rect.left && x < rect.right && y > rect.top && y < rect.bottom) {
-        if (source === 'orbit') {
-          attemptTriage(task);
-        }
-        return;
-      }
-    }
-  };
-
   const startSunset = () => {
     setSunsetQueue([...planned]);
     setIsClosingDay(true);
@@ -356,8 +331,6 @@ export default function useTaskManager() {
     // Refs
     inputRef,
     intentInputRef,
-    intentZoneRef,
-    orbitZoneRef,
     // Computed
     totalPlannedMinutes,
     isOverCapacity,
@@ -374,7 +347,6 @@ export default function useTaskManager() {
     saveDuration,
     attemptTriage,
     executeTradeOff,
-    handleDragEnd,
     startSunset,
     processSunsetTask,
     undoRemoval,

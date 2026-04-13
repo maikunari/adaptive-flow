@@ -16,23 +16,16 @@ export default function OrbitCard({
   saveText,
   attemptTriage,
   deleteOrbit,
-  handleDragEnd,
   formatMinutes,
 }) {
   return (
     <motion.div
       layout
-      drag
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-      dragElastic={0.7}
-      dragMomentum={false}
-      onDragEnd={(e, info) => handleDragEnd(e, info, task, 'orbit')}
-      whileDrag={{ scale: 1.05, zIndex: 50, boxShadow: '0 20px 40px rgba(0,0,0,0.1)', cursor: 'grabbing' }}
       transition={{ type: 'spring', stiffness: 400, damping: 30 }}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all cursor-grab"
+      className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all"
     >
       <div className="flex items-center gap-4 min-w-0 flex-1">
         <div className={`w-2 h-2 rounded-full flex-shrink-0 ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
