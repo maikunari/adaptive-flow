@@ -107,7 +107,7 @@ const App = () => {
               ref={tm.intentInputRef}
               value={tm.intentInputValue}
               onChange={(e) => tm.setIntentInputValue(e.target.value)}
-              placeholder="Plan your day... (Cmd+J)"
+              placeholder="Plan your day...  ⌘J"
               aria-label="Add task directly to Intent"
               className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
             />
@@ -140,12 +140,6 @@ const App = () => {
                 />
               ))}
             </AnimatePresence>
-            {tm.planned.length === 0 && (
-              <div className="text-center py-20 border-2 border-dashed border-gray-100 rounded-3xl text-gray-300 font-medium">
-                What's your top priority today? Add it above, or press{' '}
-                <kbd className="text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded font-mono text-xs border border-gray-100">⌘J</kbd>
-              </div>
-            )}
           </div>
         </section>
 
@@ -165,7 +159,7 @@ const App = () => {
                 ref={tm.inputRef}
                 value={tm.inputValue}
                 onChange={(e) => tm.setInputValue(e.target.value)}
-                placeholder="Capture distraction... (Cmd+K)"
+                placeholder="Capture distraction...  ⌘K"
                 aria-label="Add new orbit task"
                 className="w-full bg-white border border-gray-100 rounded-3xl p-6 pl-14 text-lg focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-400 transition-all outline-none shadow-sm placeholder:text-gray-300"
               />
@@ -195,12 +189,6 @@ const App = () => {
                   />
                 ))}
               </AnimatePresence>
-              {tm.orbit.length === 0 && (
-                <div className="text-center py-16 border-2 border-dashed border-gray-100 rounded-3xl text-gray-300 font-medium">
-                  When something urgent lands, capture it here with{' '}
-                  <kbd className="text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded font-mono text-xs border border-gray-100">⌘K</kbd>
-                </div>
-              )}
             </div>
           </div>
         </section>
