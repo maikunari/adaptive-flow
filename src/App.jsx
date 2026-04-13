@@ -220,13 +220,16 @@ const App = () => {
 
       {/* Help button — persistent corner hint (desktop only) */}
       {!isTouchDevice && (
-        <button
+        <motion.button
           onClick={() => tm.setIsHelpOpen(true)}
           aria-label="Show keyboard shortcuts (Cmd+/)"
-          className="fixed bottom-6 right-6 p-3 rounded-full bg-white border border-gray-100 shadow-sm text-gray-300 opacity-40 hover:opacity-100 hover:shadow-md hover:text-gray-500 transition-all z-30"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 1.5, type: 'spring', stiffness: 400, damping: 12 }}
+          className="fixed bottom-6 right-6 p-3 rounded-full bg-white border border-gray-200 shadow-md text-gray-500 hover:shadow-lg hover:text-indigo-500 hover:border-indigo-200 transition-all z-30"
         >
           <HelpCircle size={18} />
-        </button>
+        </motion.button>
       )}
 
       {/* Shortcut Overlay */}
