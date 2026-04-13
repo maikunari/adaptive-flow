@@ -157,8 +157,9 @@ export default function useTaskManager() {
 
   const attemptTriage = (task) => {
     if (!task) return;
-    if (planned.length === 0) {
-      setPlanned([{ ...task }]);
+    const wouldExceed = totalPlannedMinutes + (parseInt(task.duration, 10) || 0) > dailyCapacity;
+    if (!wouldExceed) {
+      setPlanned((prev) => [{ ...task }, ...prev]);
       setOrbit((prev) => prev.filter((t) => t.id !== task.id));
     } else {
       setTriageTask(task);
