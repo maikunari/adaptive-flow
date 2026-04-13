@@ -285,6 +285,14 @@ export default function useTaskManager() {
     setEditingTextId(null);
   };
 
+  const togglePriority = (id) => {
+    const toggle = (list) => list.map((t) =>
+      t.id === id ? { ...t, priority: t.priority === 'high' ? 'medium' : 'high' } : t
+    );
+    setPlanned(toggle(planned));
+    setOrbit(toggle(orbit));
+  };
+
   const saveDuration = () => {
     const val = Math.max(0, parseInt(editValue, 10) || 0);
     const updateTask = (list) => list.map((t) => (t.id === editingId ? { ...t, duration: val } : t));
@@ -334,6 +342,7 @@ export default function useTaskManager() {
 
   return {
     planned,
+    setPlanned,
     orbit,
     dailyCapacity,
     setDailyCapacity,
@@ -380,6 +389,7 @@ export default function useTaskManager() {
     deleteOrbit,
     startEditing,
     saveDuration,
+    togglePriority,
     attemptTriage,
     executeTradeOff,
     startSunset,

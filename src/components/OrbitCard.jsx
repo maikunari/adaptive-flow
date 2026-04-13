@@ -16,6 +16,7 @@ export default function OrbitCard({
   saveText,
   attemptTriage,
   deleteOrbit,
+  togglePriority,
   formatMinutes,
 }) {
   return (
@@ -28,7 +29,12 @@ export default function OrbitCard({
       className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all"
     >
       <div className="flex items-center gap-4 min-w-0 flex-1">
-        <div className={`w-2 h-2 rounded-full flex-shrink-0 ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
+        <button
+          onClick={() => togglePriority(task.id)}
+          title={task.priority === 'high' ? 'Set normal priority' : 'Set high priority'}
+          aria-label={`Priority: ${task.priority}. Click to toggle.`}
+          className={`w-3 h-3 rounded-full flex-shrink-0 transition-colors hover:scale-150 ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300 hover:bg-orange-300'}`}
+        />
         {editingTextId === task.id ? (
           <input
             type="text"

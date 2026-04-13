@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { Plus, AlertCircle, Calendar, Settings2, Moon, HelpCircle } from 'lucide-react';
 import { CAPACITY_WARN_THRESHOLD } from './constants';
 import useTaskManager from './hooks/useTaskManager';
@@ -122,7 +122,7 @@ const App = () => {
             </div>
           </form>
 
-          <div className="space-y-3">
+          <Reorder.Group axis="y" values={tm.planned} onReorder={tm.setPlanned} className="space-y-3">
             <AnimatePresence mode="popLayout">
               {tm.planned.map((task, index) => (
                 <TaskCard
@@ -148,7 +148,7 @@ const App = () => {
                 />
               ))}
             </AnimatePresence>
-          </div>
+          </Reorder.Group>
 
           {/* Keyboard nav hint — appears when keyboard selection is active */}
           <AnimatePresence>
@@ -207,6 +207,7 @@ const App = () => {
                     saveText={tm.saveText}
                     attemptTriage={tm.attemptTriage}
                     deleteOrbit={tm.deleteOrbit}
+                    togglePriority={tm.togglePriority}
                     formatMinutes={tm.formatMinutes}
                   />
                 ))}

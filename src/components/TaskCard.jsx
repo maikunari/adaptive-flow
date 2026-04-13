@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, Reorder } from 'framer-motion';
 import { CheckCircle2, Trash2, Check, Clock, ChevronUp, ChevronDown } from 'lucide-react';
 
 const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
@@ -32,17 +32,20 @@ export default function TaskCard({
   };
 
   return (
-    <motion.div
-      layout
-      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-      initial={{ opacity: 0, scale: 0.9 }}
+    <Reorder.Item
+      value={task}
+      dragListener={!completing}
+      layout="position"
+      layoutTransition={{ type: 'spring', stiffness: 500, damping: 35, mass: 0.5 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={
         completing
-          ? { opacity: 0, scale: 1.04, backgroundColor: 'rgba(220, 252, 231, 1)' }
-          : { opacity: 1, scale: 1 }
+          ? { opacity: 0, scale: 1.04, backgroundColor: 'rgba(220, 252, 231, 1)', transition: { duration: 0.4 } }
+          : { opacity: 1, scale: 1, transition: { duration: 0.2 } }
       }
-      exit={{ opacity: 0, scale: 0.9 }}
-      className={`group bg-white border p-5 rounded-2xl shadow-sm transition-all flex items-center justify-between ${
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+      whileDrag={{ scale: 1.02, boxShadow: '0 8px 20px rgba(0,0,0,0.12)', zIndex: 50 }}
+      className={`group bg-white border p-5 rounded-2xl shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing ${
         completing
           ? 'border-emerald-300 shadow-emerald-100 shadow-md'
           : selectedIndex === index
@@ -153,6 +156,6 @@ export default function TaskCard({
           </>
         )}
       </div>
-    </motion.div>
+    </Reorder.Item>
   );
 }
