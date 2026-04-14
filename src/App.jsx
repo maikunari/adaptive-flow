@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
-import { Plus, AlertCircle, Calendar, Settings2, Moon, HelpCircle } from 'lucide-react';
+import { Plus, AlertCircle, Calendar, Settings2, Moon, HelpCircle, User } from 'lucide-react';
 import { CAPACITY_WARN_THRESHOLD } from './constants';
 import { useAuth } from './contexts/AuthContext';
 import useTaskManager from './hooks/useTaskManager';
@@ -242,6 +242,33 @@ const App = () => {
         </section>
       </div>
       </div>
+
+      {/* Account button — bottom left */}
+      {user && (
+        <motion.button
+          onClick={() => tm.setIsSettingsOpen(true)}
+          aria-label="Account settings"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 1.5, type: 'spring', stiffness: 400, damping: 12 }}
+          className="fixed bottom-6 left-6 p-3 rounded-full bg-white border border-gray-200 shadow-md text-gray-500 hover:shadow-lg hover:text-indigo-500 hover:border-indigo-200 transition-all z-30"
+        >
+          <User size={18} />
+        </motion.button>
+      )}
+      {isGuest && (
+        <motion.button
+          onClick={() => window.location.reload()}
+          aria-label="Sign up for an account"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 3, type: 'spring', stiffness: 400, damping: 12 }}
+          className="fixed bottom-6 left-6 px-4 py-2.5 rounded-full bg-white border border-gray-200 shadow-md text-gray-500 hover:shadow-lg hover:text-indigo-500 hover:border-indigo-200 transition-all z-30 flex items-center gap-2 text-xs font-semibold"
+        >
+          <User size={14} />
+          Sign up to sync
+        </motion.button>
+      )}
 
       {/* Help button — persistent corner hint (desktop only) */}
       {!isTouchDevice && (
