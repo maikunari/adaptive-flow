@@ -92,7 +92,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
             <div className="space-y-3">
               <div className="flex items-center gap-3 mb-3">
                 <h3 className="text-base font-semibold tracking-tight text-[#1D1D1F]">Intent</h3>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Your plan</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Your plan</span>
               </div>
               <AnimatePresence mode="popLayout">
                 {intent.map((task) => (
@@ -115,7 +115,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
                       }`} />
                       <span className="text-sm font-medium text-gray-600">{task.text}</span>
                     </div>
-                    <span className="text-[10px] font-semibold text-gray-300 uppercase">{task.duration || '30m'}</span>
+                    <span className="text-xs font-semibold text-gray-400 uppercase">{task.duration || '30m'}</span>
                   </motion.div>
                 ))}
               </AnimatePresence>
@@ -125,7 +125,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
             <div className="space-y-3">
               <div className="flex items-center gap-3 mb-3">
                 <h3 className="text-base font-semibold tracking-tight text-[#1D1D1F]">Orbit</h3>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Interruptions</span>
+                <span className="text-xs font-bold uppercase tracking-widest text-gray-400">Interruptions</span>
               </div>
               <AnimatePresence mode="popLayout">
                 {orbit.map((task) => (
@@ -161,7 +161,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-xs text-indigo-400 text-center mt-5 font-medium"
+                className="text-sm text-indigo-400 text-center mt-5 font-medium"
               >
                 ← Urgent task pushed in. Low-priority bumped out. →
               </motion.p>
@@ -171,7 +171,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="text-xs text-gray-300 text-center mt-5 font-medium"
+                className="text-sm text-gray-400 text-center mt-5 font-medium"
               >
                 Your day has a limit. The app enforces it.
               </motion.p>
@@ -189,17 +189,17 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
       >
         <div>
           <p className="text-sm font-semibold text-[#1D1D1F]">Forced trade-offs</p>
-          <p className="text-xs text-gray-400">No silent overloading</p>
+          <p className="text-sm text-gray-400">No silent overloading</p>
         </div>
         <div className="w-px bg-gray-200" />
         <div>
           <p className="text-sm font-semibold text-[#1D1D1F]">Sunset ritual</p>
-          <p className="text-xs text-gray-400">Close your day with intention</p>
+          <p className="text-sm text-gray-400">Close your day with intention</p>
         </div>
         <div className="w-px bg-gray-200" />
         <div>
           <p className="text-sm font-semibold text-[#1D1D1F]">Capacity aware</p>
-          <p className="text-xs text-gray-400">Your time is finite</p>
+          <p className="text-sm text-gray-400">Your time is finite</p>
         </div>
       </motion.div>
 
