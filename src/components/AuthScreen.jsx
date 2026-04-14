@@ -55,6 +55,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
       >
         {/* Intent preview */}
         <div className="space-y-3">
+          <h3 className="text-lg font-semibold tracking-tight text-[#1D1D1F] mb-1">Intent</h3>
           <div className="flex items-center gap-2 opacity-40 mb-2">
             <Calendar size={12} strokeWidth={2.5} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Today's Focus</span>
@@ -72,6 +73,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
 
         {/* Orbit preview */}
         <div className="space-y-3">
+          <h3 className="text-lg font-semibold tracking-tight text-[#1D1D1F] mb-1">Orbit</h3>
           <div className="flex items-center gap-2 opacity-40 mb-2">
             <AlertCircle size={12} strokeWidth={2.5} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Incoming</span>
