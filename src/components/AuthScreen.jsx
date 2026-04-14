@@ -71,11 +71,11 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-xl text-center mb-14"
       >
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500/70 mb-4">Task management, reimagined</p>
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-500/70 mb-4">A decision framework for your day</p>
         <h1 className="text-6xl md:text-7xl font-semibold tracking-tight text-[#1D1D1F] mb-5">Adaptive Flow</h1>
         <p className="text-xl text-gray-500 font-medium mb-4">Plan with intention. Adapt without guilt.</p>
         <p className="text-base text-gray-400 max-w-md mx-auto leading-relaxed">
-          The task manager where adding means choosing. Every <span className="text-[#1D1D1F] font-semibold">"yes"</span> requires a <span className="text-[#1D1D1F] font-semibold">"no."</span>
+          Your day is finite. Every <span className="text-[#1D1D1F] font-semibold">"yes"</span> requires a <span className="text-[#1D1D1F] font-semibold">"no."</span>
         </p>
       </motion.div>
 
