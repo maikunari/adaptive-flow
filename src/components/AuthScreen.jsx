@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, ArrowRight, CheckCircle2, Calendar, AlertCircle } from 'lucide-react';
+
+const previewIntent = [
+  { text: 'Write project proposal', duration: '2h' },
+  { text: 'Review pull requests', duration: '45m' },
+  { text: 'Call with accountant', duration: '30m' },
+];
+
+const previewOrbit = [
+  { text: 'Client wants changes by EOD', priority: 'high' },
+  { text: 'New bug report from QA', priority: 'high' },
+];
 
 export default function AuthScreen({ onMagicLink, onGuest }) {
   const [email, setEmail] = useState('');
@@ -23,20 +34,73 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFBFD] flex items-center justify-center p-6 font-sans">
+    <div className="min-h-screen bg-[#FBFBFD] flex flex-col items-center justify-center p-6 font-sans">
+      {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-sm text-center"
+        className="w-full max-w-sm text-center mb-16"
       >
         <h1 className="text-5xl font-semibold tracking-tight text-[#1D1D1F] mb-3">Adaptive Flow</h1>
-        <p className="text-gray-400 font-medium mb-12">Plan with intention. Adapt without guilt.</p>
+        <p className="text-gray-400 font-medium mb-4">Plan with intention. Adapt without guilt.</p>
+        <p className="text-sm text-gray-300">The only task manager that forces a trade-off when your day is full. Every "yes" requires a "no."</p>
+      </motion.div>
 
+      {/* Product preview */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="w-full max-w-2xl grid grid-cols-2 gap-8 mb-16"
+      >
+        {/* Intent preview */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 opacity-40 mb-2">
+            <Calendar size={12} strokeWidth={2.5} />
+            <span className="text-[10px] font-bold uppercase tracking-widest">Today's Focus</span>
+          </div>
+          {previewIntent.map((task) => (
+            <div key={task.text} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 rounded-full border-2 border-gray-200" />
+                <span className="text-sm font-medium text-gray-600">{task.text}</span>
+              </div>
+              <span className="text-[10px] font-semibold text-gray-300 uppercase">{task.duration}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Orbit preview */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 opacity-40 mb-2">
+            <AlertCircle size={12} strokeWidth={2.5} />
+            <span className="text-[10px] font-bold uppercase tracking-widest">Incoming</span>
+          </div>
+          {previewOrbit.map((task) => (
+            <div key={task.text} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
+                <span className="text-sm font-medium text-gray-600">{task.text}</span>
+              </div>
+              <ArrowRight size={14} className="text-gray-300" />
+            </div>
+          ))}
+          <p className="text-xs text-gray-300 text-center pt-2 italic">Move to Intent → app forces a trade-off</p>
+        </div>
+      </motion.div>
+
+      {/* Auth form */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-sm"
+      >
         {sent ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="space-y-4"
+            className="space-y-4 text-center"
           >
             <div className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto">
               <CheckCircle2 size={32} />
