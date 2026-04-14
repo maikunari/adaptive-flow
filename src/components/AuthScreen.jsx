@@ -1,23 +1,58 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, ArrowRight, CheckCircle2, Calendar, AlertCircle } from 'lucide-react';
 
-const previewIntent = [
-  { text: 'Write project proposal', duration: '2h' },
-  { text: 'Review pull requests', duration: '45m' },
-  { text: 'Call with accountant', duration: '30m' },
+// Animation sequence: orbit task moves to intent, bumps one out
+const CYCLE_MS = 5000;
+
+const allIntentTasks = [
+  { id: 'i1', text: 'Write project proposal', duration: '2h' },
+  { id: 'i2', text: 'Review pull requests', duration: '45m' },
+  { id: 'i3', text: 'Call with accountant', duration: '30m' },
 ];
 
-const previewOrbit = [
-  { text: 'Client wants changes by EOD', priority: 'high' },
-  { text: 'New bug report from QA', priority: 'high' },
+const allOrbitTasks = [
+  { id: 'o1', text: 'Client wants changes by EOD', priority: 'high' },
+  { id: 'o2', text: 'New bug report from QA', priority: 'high' },
 ];
+
+// Cycle through 3 states:
+// 0: initial (3 intent, 2 orbit)
+// 1: orbit[0] moves to intent, intent[2] bumps out (3 intent, 1 orbit + 1 bumped)
+// 2: reset back to initial
+function useAnimationCycle() {
+  const [phase, setPhase] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPhase((p) => (p + 1) % 3);
+    }, CYCLE_MS);
+    return () => clearInterval(timer);
+  }, []);
+
+  let intent, orbit;
+  if (phase === 0) {
+    intent = allIntentTasks;
+    orbit = allOrbitTasks;
+  } else if (phase === 1) {
+    // o1 moved to intent, i3 bumped to orbit
+    intent = [allOrbitTasks[0], allIntentTasks[0], allIntentTasks[1]];
+    orbit = [allIntentTasks[2], allOrbitTasks[1]];
+  } else {
+    // back to normal
+    intent = allIntentTasks;
+    orbit = allOrbitTasks;
+  }
+
+  return { intent, orbit, phase };
+}
 
 export default function AuthScreen({ onMagicLink, onGuest }) {
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { intent, orbit, phase } = useAnimationCycle();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +81,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
         <p className="text-sm text-gray-300">The only task manager that forces a trade-off when your day is full. Every "yes" requires a "no."</p>
       </motion.div>
 
-      {/* Product preview */}
+      {/* Animated product preview */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -60,15 +95,27 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
             <Calendar size={12} strokeWidth={2.5} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Today's Focus</span>
           </div>
-          {previewIntent.map((task) => (
-            <div key={task.text} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full border-2 border-gray-200" />
-                <span className="text-sm font-medium text-gray-600">{task.text}</span>
-              </div>
-              <span className="text-[10px] font-semibold text-gray-300 uppercase">{task.duration}</span>
-            </div>
-          ))}
+          <AnimatePresence mode="popLayout">
+            {intent.map((task) => (
+              <motion.div
+                key={task.id}
+                layout
+                initial={{ opacity: 0, x: task.id.startsWith('o') ? 100 : 0, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: 100, scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                className={`bg-white border rounded-2xl p-4 flex items-center justify-between ${
+                  task.id.startsWith('o') && phase === 1 ? 'border-indigo-200 shadow-sm' : 'border-gray-100'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-5 h-5 rounded-full border-2 border-gray-200" />
+                  <span className="text-sm font-medium text-gray-600">{task.text}</span>
+                </div>
+                <span className="text-[10px] font-semibold text-gray-300 uppercase">{task.duration || '30m'}</span>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
         {/* Orbit preview */}
@@ -78,16 +125,39 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
             <AlertCircle size={12} strokeWidth={2.5} />
             <span className="text-[10px] font-bold uppercase tracking-widest">Incoming</span>
           </div>
-          {previewOrbit.map((task) => (
-            <div key={task.text} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`w-2 h-2 rounded-full ${task.priority === 'high' ? 'bg-orange-400' : 'bg-gray-300'}`} />
-                <span className="text-sm font-medium text-gray-600">{task.text}</span>
-              </div>
-              <ArrowRight size={14} className="text-gray-300" />
-            </div>
-          ))}
-          <p className="text-xs text-gray-300 text-center pt-2 italic">Move to Intent → app forces a trade-off</p>
+          <AnimatePresence mode="popLayout">
+            {orbit.map((task) => (
+              <motion.div
+                key={task.id}
+                layout
+                initial={{ opacity: 0, x: task.id.startsWith('i') ? -100 : 0, scale: 0.95 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -100, scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                className={`bg-white border rounded-2xl p-4 flex items-center justify-between ${
+                  task.id.startsWith('i') && phase === 1 ? 'border-orange-200' : 'border-gray-100'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-2 h-2 rounded-full ${(task.priority === 'high' || task.id.startsWith('i')) ? 'bg-orange-400' : 'bg-gray-300'}`} />
+                  <span className="text-sm font-medium text-gray-600">{task.text}</span>
+                </div>
+                <ArrowRight size={14} className="text-gray-300" />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          <AnimatePresence>
+            {phase === 0 && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="text-xs text-gray-300 text-center pt-2 italic"
+              >
+                Watch: tasks swap between columns automatically
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 
