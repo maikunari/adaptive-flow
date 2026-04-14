@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Settings2, X, LogOut } from 'lucide-react';
+import { Settings2, X } from 'lucide-react';
 
-export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetTime, setSunsetTime, onClose, user, onSignOut }) {
+export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetTime, setSunsetTime, onClose }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -51,18 +51,6 @@ export default function SettingsModal({ dailyCapacity, setDailyCapacity, sunsetT
         <button onClick={onClose} className="w-full p-5 rounded-3xl bg-[#1D1D1F] text-white font-semibold hover:bg-[#2D2D2F] transition-all">
           Done
         </button>
-        {user && (
-          <div className="mt-8 pt-6 border-t border-gray-100">
-            <p className="text-xs text-gray-300 mb-3">{user.email}</p>
-            <button
-              onClick={onSignOut}
-              className="flex items-center gap-2 mx-auto text-sm text-gray-400 hover:text-gray-600 transition-colors font-medium"
-            >
-              <LogOut size={14} />
-              Sign out
-            </button>
-          </div>
-        )}
       </motion.div>
     </motion.div>
   );

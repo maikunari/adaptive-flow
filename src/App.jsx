@@ -12,12 +12,14 @@ import SunsetModal from './components/SunsetModal';
 import UndoToast from './components/UndoToast';
 import ShortcutOverlay from './components/ShortcutOverlay';
 import AuthScreen from './components/AuthScreen';
+import AccountModal from './components/AccountModal';
 
 const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
 
 const App = () => {
   const { user, loading, isGuest, signInWithMagicLink, signOut, continueAsGuest } = useAuth();
   const tm = useTaskManager(user?.id || null);
+  const [isAccountOpen, setIsAccountOpen] = React.useState(false);
 
   if (loading) {
     return (
@@ -246,7 +248,7 @@ const App = () => {
       {/* Account button — bottom left */}
       {user && (
         <motion.button
-          onClick={() => tm.setIsSettingsOpen(true)}
+          onClick={() => setIsAccountOpen(true)}
           aria-label="Account settings"
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -291,6 +293,17 @@ const App = () => {
         )}
       </AnimatePresence>
 
+      {/* Account Modal */}
+      <AnimatePresence>
+        {isAccountOpen && user && (
+          <AccountModal
+            user={user}
+            onSignOut={signOut}
+            onClose={() => setIsAccountOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Modals */}
       <AnimatePresence>
         {tm.isClosingDay && (
@@ -311,8 +324,6 @@ const App = () => {
             sunsetTime={tm.sunsetTime}
             setSunsetTime={tm.setSunsetTime}
             onClose={() => tm.setIsSettingsOpen(false)}
-            user={user}
-            onSignOut={signOut}
           />
         )}
         {tm.triageTask && (
