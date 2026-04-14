@@ -39,10 +39,27 @@ function dbToApp(dbTask) {
   };
 }
 
+const SEED_INTENT = [
+  { id: 'seed-1', text: 'Set your daily capacity (tap the gauge above →)', duration: 5, priority: 'medium' },
+  { id: 'seed-2', text: 'Try the ? button in the bottom-right corner', duration: 2, priority: 'medium' },
+  { id: 'seed-3', text: 'Complete this task by tapping the circle ✓', duration: 1, priority: 'medium' },
+];
+
+const SEED_ORBIT = [
+  { id: 'seed-4', text: 'This is an interruption — tap → to move it to Intent', duration: 5, priority: 'high' },
+  { id: 'seed-5', text: 'Tell a friend about Adaptive Flow', duration: 10, priority: 'medium' },
+];
+
 export default function useTaskManager(userId = null) {
   // --- State ---
-  const [planned, setPlanned] = useState(() => safeParse('planned-tasks', []));
-  const [orbit, setOrbit] = useState(() => safeParse('orbit-tasks', []));
+  const [planned, setPlanned] = useState(() => {
+    const saved = safeParse('planned-tasks', null);
+    return saved !== null ? saved : SEED_INTENT;
+  });
+  const [orbit, setOrbit] = useState(() => {
+    const saved = safeParse('orbit-tasks', null);
+    return saved !== null ? saved : SEED_ORBIT;
+  });
   const [dailyCapacity, setDailyCapacity] = useState(() => {
     try {
       const saved = localStorage.getItem('daily-capacity');
