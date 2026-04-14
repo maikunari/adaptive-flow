@@ -161,9 +161,9 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-sm text-indigo-400 text-center mt-5 font-medium"
+                className="text-sm text-indigo-500 text-center mt-5 font-medium"
               >
-                ← Urgent task pushed in. Low-priority bumped out. →
+                ← Something urgent arrived. Something planned had to give. →
               </motion.p>
             ) : (
               <motion.p
@@ -173,7 +173,7 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
                 exit={{ opacity: 0 }}
                 className="text-sm text-gray-400 text-center mt-5 font-medium"
               >
-                Your day has a limit. The app enforces it.
+                Watch what happens when an interruption arrives...
               </motion.p>
             )}
           </AnimatePresence>
@@ -185,21 +185,24 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="flex gap-8 mb-14 text-center"
+        className="mb-14 text-center"
       >
-        <div>
-          <p className="text-sm font-semibold text-[#1D1D1F]">Forced trade-offs</p>
-          <p className="text-sm text-gray-400">No silent overloading</p>
-        </div>
-        <div className="w-px bg-gray-200" />
-        <div>
-          <p className="text-sm font-semibold text-[#1D1D1F]">Sunset ritual</p>
-          <p className="text-sm text-gray-400">Close your day with intention</p>
-        </div>
-        <div className="w-px bg-gray-200" />
-        <div>
-          <p className="text-sm font-semibold text-[#1D1D1F]">Capacity aware</p>
-          <p className="text-sm text-gray-400">Your time is finite</p>
+        <p className="text-sm text-gray-400 mb-6 italic">For people who say yes to everything and end the day wondering where it went.</p>
+        <div className="flex gap-8 justify-center">
+          <div>
+            <p className="text-sm font-semibold text-[#1D1D1F]">Conscious trade-offs</p>
+            <p className="text-sm text-gray-400">Add one, drop one</p>
+          </div>
+          <div className="w-px bg-gray-200" />
+          <div>
+            <p className="text-sm font-semibold text-[#1D1D1F]">Sunset ritual</p>
+            <p className="text-sm text-gray-400">Close your day, clear your mind</p>
+          </div>
+          <div className="w-px bg-gray-200" />
+          <div>
+            <p className="text-sm font-semibold text-[#1D1D1F]">Time-aware</p>
+            <p className="text-sm text-gray-400">Knows how much day you have left</p>
+          </div>
         </div>
       </motion.div>
 
