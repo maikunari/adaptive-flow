@@ -114,7 +114,7 @@ export default function TaskCard({
         ) : (
           <span
             onClick={() => !completing && startEditingText(task)}
-            className={`text-lg font-medium transition-colors truncate cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
+            className={`text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
           >
             {task.text}
           </span>

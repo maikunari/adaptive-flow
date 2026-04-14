@@ -52,7 +52,7 @@ export default function OrbitCard({
         ) : (
           <span
             onClick={() => startEditingText(task)}
-            className="text-lg font-medium truncate cursor-text hover:text-gray-600 transition-colors"
+            className="text-lg font-medium cursor-text hover:text-gray-600 transition-colors"
           >
             {task.text}
           </span>
