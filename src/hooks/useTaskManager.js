@@ -269,6 +269,26 @@ export default function useTaskManager(userId = null) {
   const isOverCapacity = totalPlannedMinutes > dailyCapacity;
   const capacityPercentage = Math.min((totalPlannedMinutes / dailyCapacity) * 100, 100);
 
+  // --- Time-aware capacity ---
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const tick = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(tick);
+  }, []);
+
+  const getMinutesUntilSunset = () => {
+    const [h, m] = sunsetTime.split(':').map(Number);
+    const sunsetDate = new Date(now);
+    sunsetDate.setHours(h, m, 0, 0);
+    const diff = Math.floor((sunsetDate - now) / 60000);
+    return Math.max(0, diff);
+  };
+
+  const minutesUntilSunset = getMinutesUntilSunset();
+  const availableMinutes = Math.max(0, Math.min(minutesUntilSunset, dailyCapacity) - totalPlannedMinutes);
+  const elapsedPercentage = Math.min(((dailyCapacity - minutesUntilSunset) / dailyCapacity) * 100, 100);
+  const elapsedPercClamped = Math.max(0, elapsedPercentage);
+
   // --- Soft-delete with undo ---
   const scheduleUndoClear = useCallback(() => {
     if (undoTimerRef.current) clearTimeout(undoTimerRef.current);
@@ -558,6 +578,8 @@ export default function useTaskManager(userId = null) {
     totalPlannedMinutes,
     isOverCapacity,
     capacityPercentage,
+    availableMinutes,
+    elapsedPercClamped,
     formatMinutes,
     addOrbitTask,
     addIntentTask,

@@ -95,6 +95,13 @@ const App = () => {
                     transition={tm.isOverCapacity ? { repeat: Infinity, duration: 2 } : { type: 'spring', stiffness: 300, damping: 15 }}
                     className="relative w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-white"
                   >
+                    {/* Elapsed time layer (lighter, behind) */}
+                    <motion.div
+                      className="absolute bottom-0 left-0 right-0 bg-gray-200"
+                      animate={{ height: `${tm.elapsedPercClamped}%` }}
+                      transition={{ duration: 0.5 }}
+                    />
+                    {/* Committed tasks layer (on top) */}
                     <motion.div
                       className={`absolute bottom-0 left-0 right-0 transition-colors ${
                         tm.isOverCapacity
@@ -109,10 +116,13 @@ const App = () => {
                   </motion.div>
                   <div className="text-left">
                     <p className={`text-[10px] font-bold uppercase tracking-tighter leading-none ${tm.isOverCapacity ? 'text-red-400' : 'text-gray-400'}`}>
-                      {tm.isOverCapacity ? 'Over Capacity' : 'Capacity'}
+                      {tm.isOverCapacity ? 'Over Capacity' : tm.availableMinutes <= 0 ? 'No Time Left' : 'Available'}
                     </p>
                     <p className="text-xs font-semibold leading-tight">
-                      {tm.totalPlannedMinutes} / {tm.dailyCapacity}m
+                      {tm.isOverCapacity
+                        ? `${tm.totalPlannedMinutes} / ${tm.dailyCapacity}m`
+                        : `${tm.formatMinutes(tm.availableMinutes)} left`
+                      }
                     </p>
                   </div>
                   <Settings2 size={14} className="text-gray-300 group-hover:text-gray-500 transition-colors" />
