@@ -86,9 +86,9 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
           <div className="grid grid-cols-2 gap-6 md:gap-8">
             {/* Intent preview */}
             <div className="space-y-2.5">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-base font-semibold tracking-tight text-[#1D1D1F]">Intent</h3>
+              <div className="mb-2">
                 <span className="text-xs font-bold uppercase tracking-widest text-gray-300">Today's focus</span>
+                <h3 className="text-lg font-semibold tracking-tight text-[#1D1D1F]">Intent</h3>
               </div>
               <AnimatePresence mode="popLayout">
                 {intent.map((task) => (
@@ -119,9 +119,9 @@ export default function AuthScreen({ onMagicLink, onGuest }) {
 
             {/* Orbit preview */}
             <div className="space-y-2.5">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-base font-semibold tracking-tight text-[#1D1D1F]">Orbit</h3>
+              <div className="mb-2">
                 <span className="text-xs font-bold uppercase tracking-widest text-gray-300">Incoming</span>
+                <h3 className="text-lg font-semibold tracking-tight text-[#1D1D1F]">Orbit</h3>
               </div>
               <AnimatePresence mode="popLayout">
                 {orbit.map((task) => (
