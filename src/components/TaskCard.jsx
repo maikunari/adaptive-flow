@@ -117,23 +117,22 @@ export default function TaskCard({
             aria-label="Edit task name"
           />
         ) : (
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <span
-              onClick={() => !completing && startEditingText(task)}
-              className={`text-base md:text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
-            >
-              {task.text}
-            </span>
-            {isActive && !completing && (
-              <span className="flex items-center gap-1.5 flex-shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-500">In progress</span>
-              </span>
-            )}
-          </div>
+          <span
+            onClick={() => !completing && startEditingText(task)}
+            className={`text-base md:text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
+          >
+            {task.text}
+          </span>
         )}
       </div>
       <div className="flex items-center gap-2 md:gap-4 flex-shrink-0 ml-2 md:ml-4">
+        {isActive && !completing && (
+          <span
+            aria-label="In progress"
+            title="In progress"
+            className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse flex-shrink-0"
+          />
+        )}
         {!completing && (
           <>
             {editingId === task.id ? (
