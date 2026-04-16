@@ -58,7 +58,7 @@ export default function OrbitCard({
           </span>
         )}
       </div>
-      <div className="flex items-center gap-3 flex-shrink-0 ml-4">
+      <div className="flex items-center gap-2 md:gap-3 flex-shrink-0 ml-2 md:ml-4">
         {editingId === task.id ? (
           <input
             type="number"
@@ -76,10 +76,10 @@ export default function OrbitCard({
             onClick={() => startEditing(task)}
             title="Click to edit duration"
             aria-label={`Edit duration: ${formatMinutes(task.duration)}`}
-            className="flex items-center gap-1.5 text-xs font-semibold text-gray-300 uppercase tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 text-[11px] md:text-xs font-medium md:font-semibold text-gray-400 md:text-gray-300 md:uppercase tracking-tight md:tracking-tighter hover:text-gray-500 hover:underline underline-offset-2 transition-colors cursor-pointer whitespace-nowrap"
           >
             {formatMinutes(task.duration)}
-            <Clock size={10} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+            <Clock size={10} className="opacity-0 group-hover:opacity-60 transition-opacity hidden md:inline" />
           </button>
         )}
         <button
