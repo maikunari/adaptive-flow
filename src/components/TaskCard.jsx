@@ -46,7 +46,7 @@ export default function TaskCard({
       }
       exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
       whileDrag={{ scale: 1.02, boxShadow: '0 8px 20px rgba(0,0,0,0.12)', zIndex: 50 }}
-      className={`group bg-white border p-5 rounded-2xl shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing ${
+      className={`group bg-white border p-3.5 md:p-5 rounded-2xl shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing ${
         completing
           ? 'border-emerald-300 shadow-emerald-100 shadow-md'
           : isActive && !completing
@@ -57,24 +57,26 @@ export default function TaskCard({
       }`}
     >
       <div className="flex items-center gap-3 min-w-0 flex-1">
-        {/* Touch reorder buttons */}
+        {/* Touch reorder buttons — compact, tight against the card edge */}
         {isTouchDevice && !completing && (
-          <div className="flex flex-col gap-0.5 flex-shrink-0">
+          <div className="flex flex-col -my-1 flex-shrink-0">
             <button
+              data-compact
               onClick={() => index > 0 && moveTask(index, -1)}
               disabled={index === 0}
               aria-label="Move task up"
-              className={`p-0.5 rounded transition-colors ${index === 0 ? 'text-gray-200' : 'text-gray-400 active:text-indigo-500'}`}
+              className={`px-1 py-0.5 transition-colors ${index === 0 ? 'text-gray-200' : 'text-gray-400 active:text-indigo-500'}`}
             >
-              <ChevronUp size={14} />
+              <ChevronUp size={16} />
             </button>
             <button
+              data-compact
               onClick={() => index < totalTasks - 1 && moveTask(index, 1)}
               disabled={index === totalTasks - 1}
               aria-label="Move task down"
-              className={`p-0.5 rounded transition-colors ${index === totalTasks - 1 ? 'text-gray-200' : 'text-gray-400 active:text-indigo-500'}`}
+              className={`px-1 py-0.5 transition-colors ${index === totalTasks - 1 ? 'text-gray-200' : 'text-gray-400 active:text-indigo-500'}`}
             >
-              <ChevronDown size={14} />
+              <ChevronDown size={16} />
             </button>
           </div>
         )}
@@ -118,7 +120,7 @@ export default function TaskCard({
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <span
               onClick={() => !completing && startEditingText(task)}
-              className={`text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
+              className={`text-base md:text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
             >
               {task.text}
             </span>

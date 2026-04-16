@@ -26,7 +26,7 @@ export default function OrbitCard({
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="bg-white border border-gray-100 p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all"
+      className="bg-white border border-gray-100 p-3.5 md:p-5 rounded-2xl shadow-sm flex items-center justify-between group hover:border-indigo-200 transition-all"
     >
       <div className="flex items-center gap-4 min-w-0 flex-1">
         <button
@@ -52,7 +52,7 @@ export default function OrbitCard({
         ) : (
           <span
             onClick={() => startEditingText(task)}
-            className="text-lg font-medium cursor-text hover:text-gray-600 transition-colors"
+            className="text-base md:text-lg font-medium cursor-text hover:text-gray-600 transition-colors"
           >
             {task.text}
           </span>

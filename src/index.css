@@ -49,7 +49,7 @@ body {
 }
 
 @media (pointer: coarse) {
-  button, [role="button"] {
+  button:not([data-compact]), [role="button"]:not([data-compact]) {
     min-height: 44px;
     min-width: 44px;
   }
