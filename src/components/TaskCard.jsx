@@ -23,6 +23,7 @@ export default function TaskCard({
   moveTask,
   totalTasks,
   formatMinutes,
+  isActive = false,
 }) {
   const [completing, setCompleting] = useState(false);
 
@@ -48,9 +49,11 @@ export default function TaskCard({
       className={`group bg-white border p-5 rounded-2xl shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing ${
         completing
           ? 'border-emerald-300 shadow-emerald-100 shadow-md'
-          : selectedIndex === index
-            ? 'border-indigo-400 ring-2 ring-indigo-100 shadow-md'
-            : 'border-gray-100 hover:shadow-md'
+          : isActive && !completing
+            ? 'active-beam border-transparent shadow-md'
+            : selectedIndex === index
+              ? 'border-indigo-400 ring-2 ring-indigo-100 shadow-md'
+              : 'border-gray-100 hover:shadow-md'
       }`}
     >
       <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -112,12 +115,20 @@ export default function TaskCard({
             aria-label="Edit task name"
           />
         ) : (
-          <span
-            onClick={() => !completing && startEditingText(task)}
-            className={`text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
-          >
-            {task.text}
-          </span>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span
+              onClick={() => !completing && startEditingText(task)}
+              className={`text-lg font-medium transition-colors cursor-text ${completing ? 'text-emerald-700 line-through' : 'hover:text-gray-600'}`}
+            >
+              {task.text}
+            </span>
+            {isActive && !completing && (
+              <span className="flex items-center gap-1.5 flex-shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-500">In progress</span>
+              </span>
+            )}
+          </div>
         )}
       </div>
       <div className="flex items-center gap-4 flex-shrink-0 ml-4">

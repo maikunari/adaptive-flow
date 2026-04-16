@@ -172,6 +172,7 @@ const App = () => {
                   moveTask={tm.moveTask}
                   totalTasks={tm.planned.length}
                   formatMinutes={tm.formatMinutes}
+                  isActive={index === 0}
                 />
               ))}
             </AnimatePresence>
